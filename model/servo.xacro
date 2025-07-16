@@ -1,0 +1,215 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro" xmlns="http://www.ros.org/urdf" name="servo">
+
+  <!-- 材料定义 -->
+  <material name="orange">
+    <color rgba="0.546 0.202 0.041 1.0"/>
+  </material>
+  
+  <material name="purple">
+    <color rgba="0.144 0.053 0.254 1.0"/>
+  </material>
+  
+  <material name="blue">
+    <color rgba="0.022 0.156 0.402 1.0"/>
+  </material>
+  
+  <material name="pink">
+    <color rgba="0.283 0.030 0.098 1.0"/>
+  </material>
+
+  <!-- 底座 base_link -->
+  <link name="base_link">
+    <visual>
+      <geometry>
+        <box size="0.2 0.2 0.1"/>
+      </geometry>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <material name="orange"/>
+    </visual>
+    <collision>
+      <geometry>
+        <box size="0.2 0.2 0.1"/>
+      </geometry>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+    </collision>
+    <inertial>
+      <mass value="1.0"/>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <inertia ixx="0.167" iyy="0.167" izz="0.167" ixy="0.0" ixz="0.0" iyz="0.0"/>
+    </inertial>
+  </link>
+
+  <!-- 水平旋转圆柱 horizontal_cylinder -->
+  <link name="horizontal_cylinder">
+    <visual>
+      <geometry>
+        <cylinder radius="0.05" length="0.1"/>
+      </geometry>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <material name="purple"/>
+    </visual>
+    <collision>
+      <geometry>
+        <cylinder radius="0.05" length="0.1"/>
+      </geometry>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+    </collision>
+    <inertial>
+      <mass value="1.0"/>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <inertia ixx="0.333" iyy="0.5" izz="0.333" ixy="0.0" ixz="0.0" iyz="0.0"/>
+    </inertial>
+  </link>
+
+  <!-- 水平旋转关节 -->
+  <joint name="horizontal_joint" type="revolute">
+    <parent link="base_link"/>
+    <child link="horizontal_cylinder"/>
+    <origin xyz="0 0 0.1" rpy="0 0 0"/>
+    <axis xyz="0 0 1"/>
+    <limit lower="-3.14159" upper="3.14159" effort="10" velocity="1.0"/>
+    <dynamics damping="0.1" friction="0.1"/>
+  </joint>
+
+  <!-- 竖直旋转圆柱 vertical_cylinder -->
+  <link name="vertical_cylinder">
+    <visual>
+      <geometry>
+        <cylinder radius="0.05" length="0.2"/>
+      </geometry>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <material name="blue"/>
+    </visual>
+    <collision>
+      <geometry>
+        <cylinder radius="0.05" length="0.2"/>
+      </geometry>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+    </collision>
+    <inertial>
+      <mass value="1.0"/>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <inertia ixx="0.333" iyy="0.5" izz="0.333" ixy="0.0" ixz="0.0" iyz="0.0"/>
+    </inertial>
+  </link>
+
+  <!-- 竖直旋转关节 -->
+  <joint name="vertical_joint" type="revolute">
+    <parent link="horizontal_cylinder"/>
+    <child link="vertical_cylinder"/>
+    <origin xyz="0 0 0.1" rpy="1.5708 0 0"/>
+    <axis xyz="0 0 1"/>
+    <limit lower="-1.0" upper="1.0" effort="5" velocity="1.0"/>
+    <dynamics damping="0.1" friction="0.1"/>
+  </joint>
+
+  <!-- 相机 camera_link -->
+  <link name="camera_link">
+    <visual>
+      <geometry>
+        <box size="0.1 0.1 0.1"/>
+      </geometry>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <material name="pink"/>
+    </visual>
+    <collision>
+      <geometry>
+        <box size="0.1 0.1 0.1"/>
+      </geometry>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+    </collision>
+    <inertial>
+      <mass value="1.0"/>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <inertia ixx="0.167" iyy="0.167" izz="0.167" ixy="0.0" ixz="0.0" iyz="0.0"/>
+    </inertial>
+  </link>
+
+  <!-- 相机固定关节 -->
+  <joint name="camera_joint" type="fixed">
+    <parent link="vertical_cylinder"/>
+    <child link="camera_link"/>
+    <origin xyz="0.095 0 0" rpy="-1.5708 0 0"/>
+  </joint>
+
+  <!-- 相机光学框架 -->
+  <link name="camera_optical_frame">
+    <inertial>
+      <mass value="0.001"/>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <inertia ixx="0.000001" iyy="0.000001" izz="0.000001" ixy="0.0" ixz="0.0" iyz="0.0"/>
+    </inertial>
+  </link>
+
+  <!-- 相机光学关节 -->
+  <joint name="camera_optical_joint" type="fixed">
+    <parent link="camera_link"/>
+    <child link="camera_optical_frame"/>
+    <origin xyz="0 0 0" rpy="-1.57 0 -1.57"/>
+  </joint>
+
+  <!-- Gazebo相机传感器 -->
+  <gazebo reference="camera_link">
+    <material>Gazebo/Red</material>
+    <sensor name="camera" type="camera">
+      <camera>
+          <horizontal_fov>1.047</horizontal_fov>
+          <image>
+          <width>640</width>
+          <height>480</height>
+          </image>
+          <clip>
+          <near>0.1</near>
+          <far>100</far>
+          </clip>
+      </camera>
+      <always_on>1</always_on>
+      <update_rate>30</update_rate>
+      <visualize>true</visualize>
+      <topic>camera</topic>
+      <enable_metrics>true</enable_metrics>
+    </sensor>
+  </gazebo>
+
+  <!-- Gazebo控制插件 -->
+  <gazebo>
+    <plugin filename="gz-sim-joint-state-publisher-system" name="gz::sim::systems::JointStatePublisher">
+      <topic>/servo/joint_states</topic>
+    </plugin>
+    
+    <plugin filename="gz-sim-joint-position-controller-system" name="gz::sim::systems::JointPositionController">
+      <joint_name>horizontal_joint</joint_name>
+      <topic>/servo/horizontal_joint/cmd_pos</topic>
+      <p_gain>10</p_gain>
+      <i_gain>0.1</i_gain>
+      <d_gain>0.01</d_gain>
+    </plugin>
+    
+    <plugin filename="gz-sim-joint-position-controller-system" name="gz::sim::systems::JointPositionController">
+      <joint_name>vertical_joint</joint_name>
+      <topic>/servo/vertical_joint/cmd_pos</topic>
+      <p_gain>5</p_gain>
+      <i_gain>0.1</i_gain>
+      <d_gain>0.01</d_gain>
+    </plugin>
+  </gazebo>
+
+  <!-- Gazebo材料属性 -->
+  <gazebo reference="base_link">
+    <material>Gazebo/Orange</material>
+  </gazebo>
+  
+  <gazebo reference="horizontal_cylinder">
+    <material>Gazebo/Purple</material>
+  </gazebo>
+  
+  <gazebo reference="vertical_cylinder">
+    <material>Gazebo/Blue</material>
+  </gazebo>
+  
+  <gazebo reference="camera_link">
+    <material>Gazebo/Red</material>
+  </gazebo>
+
+</robot>
