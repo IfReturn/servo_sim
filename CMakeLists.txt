@@ -53,12 +53,6 @@ install(TARGETS
   DESTINATION lib/${PROJECT_NAME}
 )
 
-# Install Python scripts
-install(PROGRAMS
-  scripts/servo_test.py
-  DESTINATION lib/${PROJECT_NAME}
-)
-
 #install compile commands for development tools
 install(FILES
   ${PROJECT_BINARY_DIR}/compile_commands.json
