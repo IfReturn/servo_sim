@@ -26,7 +26,7 @@ This package provides a complete simulation environment for a servo gimbal consi
 1. Clone this repository into your ROS2 workspace:
 ```bash
 cd ~/ros2_ws/src
-git clone <repository-url> servo_sim
+git clone https://github.com/IfReturn/servo_sim.git
 ```
 
 2. Build the package:
