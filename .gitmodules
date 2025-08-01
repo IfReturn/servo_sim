@@ -1,9 +1,9 @@
 [submodule "yolo_ros"]
 	path = yolo_ros
-	url = https://github.com/IfReturn/yolo_ros.git
+	url = https://github.com/mgonzs13/yolo_ros.git
 [submodule "sim_node"]
 	path = sim_node
-	url = https://github.com/IfReturn/sim_node.git
+	url = https://github.com/IfReturn/servo_sim_node.git
 [submodule "sim_control"]
 	path = sim_control
-	url = https://github.com/IfReturn/sim_control.git
+	url = https://github.com/IfReturn/servo_sim_control.git
