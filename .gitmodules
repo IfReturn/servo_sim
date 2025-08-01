@@ -1,0 +1,9 @@
+[submodule "yolo_ros"]
+	path = yolo_ros
+	url = ./yolo_ros/
+[submodule "sim_node"]
+	path = sim_node
+	url = ./sim_node/
+[submodule "sim_control"]
+	path = sim_control
+	url = ./sim_control/
